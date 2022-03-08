@@ -20,6 +20,7 @@ public class Config {
     public Config(Plugin plugin, String fileName) {
         this.file = new File(plugin.getDataFolder(), fileName);
         this.config = YamlConfiguration.loadConfiguration(this.file);
+        copy(plugin, true);
     }
 
     /**
@@ -30,6 +31,7 @@ public class Config {
     public Config(Plugin plugin, String fileName, String path) {
         this.file = new File(path, fileName);
         this.config = YamlConfiguration.loadConfiguration(this.file);
+        copy(plugin, true, path);
     }
 
     private final File file;
