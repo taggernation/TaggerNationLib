@@ -6,29 +6,28 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.taggernation.taggernationlib.TaggerNationLib.*;
 public class Placeholder {
 
     /**
-     * Parse a string for placeholders
-     * @param text The text to parse
-     * @param player The player to parse for
-     * @return The parsed text
+     * Replace placeholders in a String
+     * @param text The text to replace
+     * @param player The player to replace text for
+     * @return The replaced text
      */
-    public String parse(String text, Player player) {
+    public String replace(String text, Player player) {
         return PlaceholderAPI.setPlaceholders(player, text);
     }
 
     /**
-     * Parse List of String for placeholders
-     * @param text The text List to parse
-     * @param player The player to parse for
-     * @return The parsed text List
+     * Replace placeholders in a list of Strings
+     * @param text The text list to replace
+     * @param player The player to replace text for
+     * @return The replaced text list
      */
-    public List<String> parse(List<String> text, Player player) {
+    public List<String> replace(List<String> text, Player player) {
         List<String> newText = new ArrayList<>();
         for (String s : text) {
-            newText.add(parse(s, player));
+            newText.add(replace(s, player));
         }
         return newText;
     }
