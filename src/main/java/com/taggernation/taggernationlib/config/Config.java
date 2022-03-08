@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import static com.taggernation.taggernationlib.TaggerNationLib.*;
+
 public class Config {
 
     /**
@@ -39,7 +41,7 @@ public class Config {
 
     /**
      * Get Initialized file
-     * @return file
+     * @return File object
      */
     public File getFile() {
         return file;
@@ -47,7 +49,7 @@ public class Config {
 
     /**
      * Get Initialized config.
-     * @return config
+     * @return FileConfiguration
      */
     public FileConfiguration getConfig() {
         return config;
@@ -94,7 +96,7 @@ public class Config {
      * @param currentVersion String
      * @param versionPath String
      * @param plugin Plugin
-     * @return boolean
+     * @return boolean true if updated
      * @throws IOException IOException
      * @throws InvalidConfigurationException InvalidConfigurationException
      */
