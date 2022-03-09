@@ -10,34 +10,38 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import static com.taggernation.taggernationlib.TaggerNationLib.*;
-
 public class Config {
+
+    private final File file;
+    private final FileConfiguration config;
+    private final Plugin plugin;
 
     /**
      * Initializes the Config.
-     * @param plugin Plugin
+     * @param plugin Instance of the plugin you want to initialize the config for
      * @param fileName String
+     * @param force boolean enable/disable force file update
      */
-    public Config(Plugin plugin, String fileName) {
+    public Config(Plugin plugin, String fileName, boolean force) {
+        this.plugin = plugin;
         this.file = new File(plugin.getDataFolder(), fileName);
         this.config = YamlConfiguration.loadConfiguration(this.file);
-        copy(plugin, true);
+        copy(force);
     }
 
     /**
      * Initializes the Config. in given path
-     * @param plugin Plugin
+     * @param plugin Instance of the plugin you want to initialize the config for
      * @param fileName String
+     * @param path String path you want to initialize the config in
+     * @param force boolean enable/disable force file update
      */
-    public Config(Plugin plugin, String fileName, String path) {
+    public Config(Plugin plugin, String fileName, String path, boolean force) {
+        this.plugin = plugin;
         this.file = new File(path, fileName);
         this.config = YamlConfiguration.loadConfiguration(this.file);
-        copy(plugin, true, path);
+        copy(force, path);
     }
-
-    private final File file;
-    private final FileConfiguration config;
 
     /**
      * Get Initialized file
@@ -77,17 +81,17 @@ public class Config {
 
     /**
      * Copy the config.
-     * @param plugin Plugin
-     * @param force boolean
+     * @param force boolean enable/disable force copy
      */
-    public void copy(Plugin plugin, boolean force) {
+    public void copy( boolean force) {
         plugin.saveResource(file.getName(), force);
     }
     /**
      * Copy the config to the given path.
-     * @param plugin Plugin
+     * @param force boolean enable/disable force copy
+     * @param path String path to save the resource
      */
-    public void copy(Plugin plugin, boolean force, String path) {
+    public void copy( boolean force, String path) {
         plugin.saveResource(path, force);
     }
 
@@ -95,12 +99,11 @@ public class Config {
      * Update the Config with the newer version of the file
      * @param currentVersion String
      * @param versionPath String
-     * @param plugin Plugin
      * @return boolean true if updated
      * @throws IOException IOException
      * @throws InvalidConfigurationException InvalidConfigurationException
      */
-    public boolean updateConfig(@NotNull String currentVersion, @NotNull String versionPath, Plugin plugin) throws IOException, InvalidConfigurationException {
+    public boolean updateConfig(@NotNull String currentVersion, @NotNull String versionPath) throws IOException, InvalidConfigurationException {
         String version = this.getString(versionPath);
         if (version.equals(currentVersion)) {
             File newFile = new File(file.getParentFile(), "old_" + version + "_" + getFile().getName());
