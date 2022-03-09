@@ -2,6 +2,7 @@ package com.taggernation.taggernationlib.logger;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
@@ -9,6 +10,7 @@ import org.bukkit.plugin.Plugin;
 import static com.taggernation.taggernationlib.TaggerNationLib.*;
 
 public class Logger {
+    private final LegacyComponentSerializer legecySerializer = LegacyComponentSerializer.builder().hexColors().useUnusualXRepeatedCharacterHexFormat().build();
     String pluginName = adventureFormat("<gradient:#cf1a91:#fbdbf4>[ </gradient>" + " <white><bold>" + "<pluginName>" + " </white></bold>" + "<gradient:#cf1a91:#fbdbf4> ]</gradient>  <red>➜  </red>");
 
     Plugin plugin;
@@ -27,7 +29,7 @@ public class Logger {
         if (!adventureFormat) {
             Bukkit.getLogger().info(pluginName.replace("<pluginName>", plugin.getName()) + ChatColor.translateAlternateColorCodes('&', message));
         }
-        plugin.getLogger().info(adventureFormat(message));
+        Bukkit.getLogger().info(adventureFormat(message));
     }
 
     /**
@@ -39,7 +41,7 @@ public class Logger {
         if (!adventureFormat) {
             Bukkit.getLogger().info(pluginName.replace("<pluginName>", plugin.getName()) + ChatColor.YELLOW + ChatColor.translateAlternateColorCodes('&', message));
         }
-        plugin.getLogger().info(adventureFormat(message));
+        Bukkit.getLogger().info(adventureFormat(message));
     }
 
     /**
@@ -51,7 +53,7 @@ public class Logger {
         if (!adventureFormat) {
             Bukkit.getLogger().info(pluginName.replace("<pluginName>", plugin.getName()) + ChatColor.RED + ChatColor.translateAlternateColorCodes('&', message));
         }
-        plugin.getLogger().info(adventureFormat(message));
+        Bukkit.getLogger().info(adventureFormat(message));
     }
 
     /**
@@ -61,6 +63,6 @@ public class Logger {
      */
     public String adventureFormat(String message) {
         Component component = miniMessage.deserialize(message);
-        return GsonComponentSerializer.gson().serialize(component);
+        return legecySerializer.serialize(component);
     }
 }
