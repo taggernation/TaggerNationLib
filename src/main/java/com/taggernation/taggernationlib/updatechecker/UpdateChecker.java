@@ -18,7 +18,7 @@ public class UpdateChecker {
     private final URL url;
     private int interval;
     private UpdateChecker instance;
-    private Update update = null;
+    private final Update update;
     private String message = null;
     private String permission = null;
     private boolean opNotify = false;
@@ -29,11 +29,14 @@ public class UpdateChecker {
      * @param url Json file URL to check for an update
      * @param interval The interval to check for an update in ticks
      */
-    public UpdateChecker(Plugin plugin, URL url, int interval) {
+    public UpdateChecker(Plugin plugin, URL url, int interval) throws IOException {
         this.plugin = plugin;
         this.url = url;
         this.interval = interval;
         this.instance = this;
+        Gson gson = new Gson();
+        InputStreamReader reader = new InputStreamReader(url.openStream());
+        this.update = gson.fromJson(reader, Update.class);
     }
 
     /**
@@ -55,26 +58,26 @@ public class UpdateChecker {
         message = message.replace("{updateLink}", update.updateLink);
         message = message.replace("{changeLog}", String.join("\n", update.data));
 
-        return new Logger(plugin).adventureFormat(message);
+        return message;
     }
 
     private String getDefaultMessage() {
-        return "<st>          </st> <red>✢</red> <gradient:#cf1a91:#fbdbf4><bold>{pluginName}</gradient> <red>✢</red> <st>            </st>"
-                + "<newline>"
-                + "<gray>     There is a new version of <aqua>{pluginName}</aqua> available!</gray>"
-                + "<newline>"
-                + "<gray>   Your version: <aqua>{pluginVersion}</aqua></gray>"
-                + "<newline>"
-                + "<gray>   New version: <aqua>{version}</aqua></gray>"
-                + "<newline>"
-                + "<newline>"
-                + "<gray> <red>✢</red> Changelog <red>✢</red>\n"
-                + "<newline>"
+        return "\n<st>          </st> <red>✢</red> <gradient:#cf1a91:#fbdbf4><bold>{pluginName}</gradient> <red>✢</red> <st>            </st>"
+                + "\n"
+                + "<gray>There is a new version of <aqua>{pluginName}</aqua> available!</gray>"
+                + "\n"
+                + "<gray> ● <gradient:#cf1a91:#fbdbf4><bold>Your version</gradient>: <aqua>{pluginVersion}</aqua></gray>"
+                + "\n"
+                + "<gray> ● <gradient:#cf1a91:#fbdbf4><bold>New Version</gradient>: <aqua>{version}</aqua></gray>"
+                + "\n"
+                + "\n"
+                + "<gray><red>✢</red> Changelog <red>✢</red>\n"
+                + "\n"
                 + "<gray>{changeLog}</gray>"
-                + "<newline>"
-                + "<gray>   Update link: <aqua>{updateLink}</aqua></gray>"
-                + "<newline>"
-                + "<st>          </st> <red>✢</red> <gradient:#cf1a91:#fbdbf4><bold>{pluginName}</gradient> <red>✢</red> <st>";
+                + "\n"
+                + "<gray> ● <gradient:#cf1a91:#fbdbf4><bold>Update link</gradient>: <aqua>{updateLink}</aqua></gray>"
+                + "\n"
+                + "<st>          </st> <red>✢</red> <gradient:#cf1a91:#fbdbf4><bold>{pluginName}</gradient> <red>✢</red> <st>          </st>";
     }
     public String getMessage() {
         return message;
@@ -125,12 +128,8 @@ public class UpdateChecker {
 
     /**
      * Set up the update checker.
-     * @throws IOException If the URL is invalid
      */
-    public void setup() throws IOException {
-        Gson gson = new Gson();
-        InputStreamReader reader = new InputStreamReader(url.openStream());
-        update = gson.fromJson(reader, Update.class);
+    public void setup() {
         if (message == null) {
             this.message = processMessage(null);
         }
@@ -148,7 +147,7 @@ public class UpdateChecker {
                     if (Bukkit.getOnlinePlayers().size() > 0 && player.hasPermission("greetings.update")) {
                         messageFramework.sendMessage(player,message);
                     }
-                    new Logger(plugin).info(message, false);
+                    new Logger(plugin).info(message, true);
                 }
             }
         }.runTaskTimerAsynchronously(plugin, 0, interval);
