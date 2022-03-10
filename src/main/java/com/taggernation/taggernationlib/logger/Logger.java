@@ -7,6 +7,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 
+import java.util.List;
+
 import static com.taggernation.taggernationlib.TaggerNationLib.*;
 
 public class Logger {
@@ -31,6 +33,16 @@ public class Logger {
         }
         Bukkit.getLogger().info(adventureFormat(message));
     }
+    /**
+     * Send String List of info message to console
+     * @param message Message to send
+     * @param adventureFormat Whether to use adventure format
+     */
+    public void info(List<String> message,boolean adventureFormat) {
+        for (String msg : message) {
+            info(msg,adventureFormat);
+        }
+    }
 
     /**
      * Send warning message to console
@@ -43,6 +55,16 @@ public class Logger {
         }
         Bukkit.getLogger().info(adventureFormat(message));
     }
+    /**
+     * Send String List of warning message to console
+     * @param message Message to send
+     * @param adventureFormat Whether to use adventure format
+     */
+    public void warn(List<String> message,boolean adventureFormat) {
+        for (String msg : message) {
+            warn(msg,adventureFormat);
+        }
+    }
 
     /**
      * Send error message to console
@@ -54,6 +76,16 @@ public class Logger {
             Bukkit.getLogger().info(pluginName.replace("<pluginName>", plugin.getName()) + ChatColor.RED + ChatColor.translateAlternateColorCodes('&', message));
         }
         Bukkit.getLogger().info(adventureFormat(message));
+    }
+    /**
+     * Send String List of error message to console
+     * @param message Message to send
+     * @param adventureFormat Whether to use adventure format
+     */
+    public void error(List<String> message,boolean adventureFormat) {
+        for (String msg : message) {
+            error(msg,adventureFormat);
+        }
     }
 
     /**
