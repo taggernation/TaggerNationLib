@@ -9,6 +9,7 @@ public class Update {
     boolean bugFix;
     boolean newFeature;
     boolean hotFix;
-    List<String> data;
+    List<String> message;
+    List<String> changeLog;
 
 }

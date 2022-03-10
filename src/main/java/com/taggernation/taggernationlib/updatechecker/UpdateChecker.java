@@ -10,16 +10,17 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.taggernation.taggernationlib.TaggerNationLib.messageFramework;
 
 public class UpdateChecker {
     private final Plugin plugin;
-    private final URL url;
     private int interval;
     private UpdateChecker instance;
     private final Update update;
-    private String message = null;
+    private List<String> message = new ArrayList<>();
     private String permission = null;
     private boolean opNotify = false;
 
@@ -31,55 +32,53 @@ public class UpdateChecker {
      */
     public UpdateChecker(Plugin plugin, URL url, int interval) throws IOException {
         this.plugin = plugin;
-        this.url = url;
         this.interval = interval;
         this.instance = this;
         Gson gson = new Gson();
         InputStreamReader reader = new InputStreamReader(url.openStream());
         this.update = gson.fromJson(reader, Update.class);
+        Bukkit.getLogger().info("[TaggerNationLib] Checking for updates for " + plugin.getName() + "..." + this.update.message);
     }
 
-    /**
-     * Set the message to be displayed when an update is available.
-     * @param message The message to be displayed
-     */
-    public UpdateChecker setMessage(String message) {
-        this.message = processMessage(message);
-        return this;
-    }
-
-    private String processMessage(String message) {
-        if (message == null) {
-            message = getDefaultMessage();
+    private void processMessage() {
+        List<String> formatter = new ArrayList<>();
+        for (String list : update.message) {
+            Bukkit.getLogger().info("[TaggerNationLib] " + list);
+            if (list.contains("{pluginName}")) {
+                list = list.replace("{pluginName}", plugin.getName());
+            }
+            if (list.contains("{pluginVersion}")) {
+                list = list.replace("{pluginVersion}", plugin.getDescription().getVersion());
+            }
+            if (list.contains("{updateLink}")) {
+                list = list.replace("{updateLink}", update.updateLink);
+            }
+            if (list.contains("{latestVersion}")) {
+                list = list.replace("{latestVersion}", update.version);
+            }
+            if (list.contains("{changeLog}")) {
+                list = list.replace("{changeLog}", String.join("\n", update.changeLog));
+            }
+            if (list.contains("{type}")) {
+                list = list.replace("{type}", getUpdateType());
+            }
+            formatter.add(list);
         }
-        message = message.replace("{version}", update.version);
-        message = message.replace("{pluginName}", plugin.getName());
-        message = message.replace("{pluginVersion}", plugin.getDescription().getVersion());
-        message = message.replace("{updateLink}", update.updateLink);
-        message = message.replace("{changeLog}", String.join("\n", update.data));
-
-        return message;
+        message = formatter;
     }
+    private String getUpdateType() {
+        if (update.hotFix) {
+            return "Hotfix";
+        }else if (update.bugFix) {
+            return "Bugfix";
+        }else if (update.newFeature) {
+            return "New Feature";
+        }else {
+            return "Update";
+        }
 
-    private String getDefaultMessage() {
-        return "\n<st>          </st> <red>✢</red> <gradient:#cf1a91:#fbdbf4><bold>{pluginName}</gradient> <red>✢</red> <st>            </st>"
-                + "\n"
-                + "<gray>There is a new version of <aqua>{pluginName}</aqua> available!</gray>"
-                + "\n"
-                + "<gray> ● <gradient:#cf1a91:#fbdbf4><bold>Your version</gradient>: <aqua>{pluginVersion}</aqua></gray>"
-                + "\n"
-                + "<gray> ● <gradient:#cf1a91:#fbdbf4><bold>New Version</gradient>: <aqua>{version}</aqua></gray>"
-                + "\n"
-                + "\n"
-                + "<gray><red>✢</red> Changelog <red>✢</red>\n"
-                + "\n"
-                + "<gray>{changeLog}</gray>"
-                + "\n"
-                + "<gray> ● <gradient:#cf1a91:#fbdbf4><bold>Update link</gradient>: <aqua>{updateLink}</aqua></gray>"
-                + "\n"
-                + "<st>          </st> <red>✢</red> <gradient:#cf1a91:#fbdbf4><bold>{pluginName}</gradient> <red>✢</red> <st>          </st>";
     }
-    public String getMessage() {
+    public List<String> getMessage() {
         return message;
     }
 
@@ -130,9 +129,7 @@ public class UpdateChecker {
      * Set up the update checker.
      */
     public void setup() {
-        if (message == null) {
-            this.message = processMessage(null);
-        }
+        processMessage();
         checkForUpdate();
     }
     /**
@@ -142,13 +139,12 @@ public class UpdateChecker {
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (update == null) throw new IllegalStateException("Update has not been set");
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (Bukkit.getOnlinePlayers().size() > 0 && player.hasPermission("greetings.update")) {
                         messageFramework.sendMessage(player,message);
                     }
-                    new Logger(plugin).info(message, true);
                 }
+                new Logger(plugin).info(message, true);
             }
         }.runTaskTimerAsynchronously(plugin, 0, interval);
     }
