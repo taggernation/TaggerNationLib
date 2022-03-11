@@ -4,8 +4,10 @@ import com.taggernation.taggernationlib.placeholder.Placeholder;
 import io.github.alen_alex.messageframework.MessageFramework;
 import io.github.alen_alex.messageframework.bukkit.framework.FrameworkBuilder;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.plugin.java.JavaPlugin;
+
 
 @Getter
 public class TaggerNationLib extends JavaPlugin {
@@ -24,6 +26,7 @@ public class TaggerNationLib extends JavaPlugin {
             papi = "SKIPPED";
         }
     }
+    @SneakyThrows
     @Override
     public void onEnable() {
         // Plugin startup logic
@@ -31,7 +34,6 @@ public class TaggerNationLib extends JavaPlugin {
         papiHook = new Placeholder();
         messageFramework = new FrameworkBuilder().setPlugin(this).withMiniMessageEngine().build();
         miniMessage = MiniMessage.builder().build();
-
         papiExist();
     }
 

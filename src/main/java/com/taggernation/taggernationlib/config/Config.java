@@ -84,7 +84,9 @@ public class Config {
      * @param force boolean enable/disable force copy
      */
     public void copy( boolean force) {
-        plugin.saveResource(file.getName(), force);
+        if (!file.exists()) {
+            plugin.saveResource(file.getName(), force);
+        }
     }
     /**
      * Copy the config to the given path.

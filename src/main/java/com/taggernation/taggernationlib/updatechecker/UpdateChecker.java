@@ -18,7 +18,7 @@ import static com.taggernation.taggernationlib.TaggerNationLib.messageFramework;
 public class UpdateChecker {
     private final Plugin plugin;
     private int interval;
-    private UpdateChecker instance;
+    private final UpdateChecker instance;
     private final Update update;
     private List<String> message = new ArrayList<>();
     private String permission = null;
@@ -34,16 +34,15 @@ public class UpdateChecker {
         this.plugin = plugin;
         this.interval = interval;
         this.instance = this;
+        plugin.getServer().getPluginManager().registerEvents(new UpdateListener(this), plugin);
         Gson gson = new Gson();
         InputStreamReader reader = new InputStreamReader(url.openStream());
         this.update = gson.fromJson(reader, Update.class);
-        Bukkit.getLogger().info("[TaggerNationLib] Checking for updates for " + plugin.getName() + "..." + this.update.message);
     }
 
     private void processMessage() {
         List<String> formatter = new ArrayList<>();
         for (String list : update.message) {
-            Bukkit.getLogger().info("[TaggerNationLib] " + list);
             if (list.contains("{pluginName}")) {
                 list = list.replace("{pluginName}", plugin.getName());
             }
@@ -128,9 +127,10 @@ public class UpdateChecker {
     /**
      * Set up the update checker.
      */
-    public void setup() {
+    public UpdateChecker setup() {
         processMessage();
         checkForUpdate();
+        return this;
     }
     /**
      * Check for an update.
