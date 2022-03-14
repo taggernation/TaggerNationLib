@@ -4,9 +4,6 @@ import com.google.gson.Gson;
 import com.taggernation.taggernationlib.logger.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -14,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,7 +20,8 @@ public class UpdateChecker {
     private final Plugin plugin;
     private int interval;
     private final UpdateChecker instance;
-    private final Update update;
+    private Update update;
+    private final InputStreamReader reader;
     private List<String> message = new ArrayList<>();
     private String permission = null;
     private boolean opNotify = false;
@@ -39,9 +36,7 @@ public class UpdateChecker {
         this.plugin = plugin;
         this.interval = interval;
         this.instance = this;
-        Gson gson = new Gson();
-        InputStreamReader reader = new InputStreamReader(url.openStream());
-        this.update = gson.fromJson(reader, Update.class);
+        this.reader = new InputStreamReader(url.openStream());
     }
 
     private void processMessage() {
@@ -143,17 +138,19 @@ public class UpdateChecker {
      * Set up the update checker.
      */
     public UpdateChecker setup() {
-        processMessage();
         checkForUpdate();
         return this;
     }
     /**
      * Check for an update.
      */
-    public void checkForUpdate() {
+    private void checkForUpdate() {
         new BukkitRunnable() {
             @Override
             public void run() {
+                Gson gson = new Gson();
+                update = gson.fromJson(reader, Update.class);
+                processMessage();
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (Bukkit.getOnlinePlayers().size() > 0 && player.hasPermission("greetings.update")) {
                         messageFramework.sendMessage(player,message);

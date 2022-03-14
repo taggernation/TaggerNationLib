@@ -12,7 +12,7 @@
     <name>TaggerNationLib</name>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -62,8 +62,12 @@
                             <shadedPattern>com.taggernation.taggernationlib.libs.vankka</shadedPattern> <!-- Replace this -->
                         </relocation>
                         <relocation>
-                            <pattern>co.aikar</pattern>
-                            <shadedPattern>com.taggernation.taggernationlib.libs.aikar</shadedPattern> <!-- Replace this -->
+                            <pattern>co.aikar.commands</pattern>
+                            <shadedPattern>com.taggernation.taggernationlib.libs.aikar.acf</shadedPattern> <!-- Replace this -->
+                        </relocation>
+                        <relocation>
+                            <pattern>co.aikar.locales</pattern>
+                            <shadedPattern>com.taggernation.taggernationlib.libs.aikar.locales</shadedPattern> <!-- Replace this -->
                         </relocation>
                     </relocations>
                 </configuration>
