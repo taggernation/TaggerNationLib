@@ -35,39 +35,39 @@
                     <relocations>
                         <relocation>
                             <pattern>dev.triumphteam.gui</pattern>
-                            <shadedPattern>com.taggernation.taggernationlib.libs.gui</shadedPattern> <!-- Replace package here here -->
+                            <shadedPattern>com.taggernation.libs.gui</shadedPattern> <!-- Replace package here here -->
                         </relocation>
                         <relocation>
                             <pattern>io.papermc.lib</pattern>
-                            <shadedPattern>com.taggernation.taggernationlib.libs.paperlib</shadedPattern> <!-- Replace this -->
+                            <shadedPattern>com.taggernation.libs.paperlib</shadedPattern> <!-- Replace this -->
                         </relocation>
                         <relocation>
                             <pattern>dev.triumphteam.api</pattern>
-                            <shadedPattern>com.taggernation.taggernationlib.libs.triumphteamapi</shadedPattern> <!-- Replace this -->
+                            <shadedPattern>com.taggernation.libs.triumphteamapi</shadedPattern> <!-- Replace this -->
                         </relocation>
                         <relocation>
                             <pattern>net.kyori</pattern>
-                            <shadedPattern>com.taggernation.taggernationlib.libs.adventure</shadedPattern> <!-- Replace this -->
+                            <shadedPattern>com.taggernation.libs.adventure</shadedPattern> <!-- Replace this -->
                         </relocation>
                         <relocation>
                             <pattern>com.google.code.gson</pattern>
-                            <shadedPattern>com.taggernation.taggernationlib.libs.gson</shadedPattern> <!-- Replace this -->
+                            <shadedPattern>com.taggernation.libs.gson</shadedPattern> <!-- Replace this -->
                         </relocation>
                         <relocation>
                             <pattern>io.github.alen_alex</pattern>
-                            <shadedPattern>com.taggernation.taggernationlib.libs.alen_alex</shadedPattern> <!-- Replace this -->
+                            <shadedPattern>com.taggernation.libs.alen_alex</shadedPattern> <!-- Replace this -->
                         </relocation>
                         <relocation>
                             <pattern>dev.vankka</pattern>
-                            <shadedPattern>com.taggernation.taggernationlib.libs.vankka</shadedPattern> <!-- Replace this -->
+                            <shadedPattern>com.taggernation.libs.vankka</shadedPattern> <!-- Replace this -->
                         </relocation>
                         <relocation>
                             <pattern>co.aikar.commands</pattern>
-                            <shadedPattern>com.taggernation.taggernationlib.libs.aikar.acf</shadedPattern> <!-- Replace this -->
+                            <shadedPattern>com.taggernation.libs.aikar.acf</shadedPattern> <!-- Replace this -->
                         </relocation>
                         <relocation>
                             <pattern>co.aikar.locales</pattern>
-                            <shadedPattern>com.taggernation.taggernationlib.libs.aikar.locales</shadedPattern> <!-- Replace this -->
+                            <shadedPattern>com.taggernation.libs.aikar.locales</shadedPattern> <!-- Replace this -->
                         </relocation>
                     </relocations>
                 </configuration>
