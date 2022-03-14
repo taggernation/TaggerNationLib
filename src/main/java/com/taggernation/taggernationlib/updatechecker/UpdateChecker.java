@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static com.taggernation.taggernationlib.TaggerNationLib.messageFramework;
@@ -65,7 +67,11 @@ public class UpdateChecker {
             }
             formatter.add(list);
         }
-        message = formatter;
+        if(update.version.equals(plugin.getDescription().getVersion())) {
+            message = Collections.singletonList("No updates found for " + plugin.getName() + ".");
+        }else {
+            message = formatter;
+        }
     }
     private String getUpdateType() {
         if (update.hotFix) {
