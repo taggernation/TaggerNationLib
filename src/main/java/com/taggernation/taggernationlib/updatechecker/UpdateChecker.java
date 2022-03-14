@@ -4,6 +4,9 @@ import com.google.gson.Gson;
 import com.taggernation.taggernationlib.logger.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -34,7 +37,6 @@ public class UpdateChecker {
         this.plugin = plugin;
         this.interval = interval;
         this.instance = this;
-        plugin.getServer().getPluginManager().registerEvents(new UpdateListener(this), plugin);
         Gson gson = new Gson();
         InputStreamReader reader = new InputStreamReader(url.openStream());
         this.update = gson.fromJson(reader, Update.class);
@@ -90,6 +92,13 @@ public class UpdateChecker {
         return this;
     }
 
+    /**
+     * Check for update on players with permission join.
+     */
+    public UpdateChecker enableOnJoin() {
+        plugin.getServer().getPluginManager().registerEvents(new UpdateListener(instance), plugin);
+        return this;
+    }
     /**
      * Set the permission required to receive a notification.
      * @param permission Permission required to receive a notification
@@ -148,6 +157,4 @@ public class UpdateChecker {
             }
         }.runTaskTimerAsynchronously(plugin, 0, interval);
     }
-
-
 }
