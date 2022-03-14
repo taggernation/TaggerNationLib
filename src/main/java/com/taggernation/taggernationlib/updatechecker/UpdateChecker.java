@@ -21,11 +21,16 @@ public class UpdateChecker {
     private final Plugin plugin;
     private int interval;
     private final UpdateChecker instance;
+
+    public void setUpdate(Update update) {
+        this.update = update;
+    }
+
     private Update update;
-    private final InputStreamReader reader;
     private List<String> message = new ArrayList<>();
     private String permission = null;
     private boolean opNotify = false;
+    Gson gson = new Gson();
 
     /**
      * Initialize the update checker for the plugin.
@@ -37,7 +42,8 @@ public class UpdateChecker {
         this.plugin = plugin;
         this.interval = interval;
         this.instance = this;
-        this.reader = new InputStreamReader(url.openStream());
+        InputStreamReader reader = new InputStreamReader(url.openStream());
+        this.update = gson.fromJson(reader, Update.class);
     }
 
     private void processMessage() {
@@ -63,7 +69,7 @@ public class UpdateChecker {
             }
             formatter.add(list);
         }
-        if(update.version.equals(plugin.getDescription().getVersion())) {
+        if(Double.parseDouble(update.version) >= Double.parseDouble(plugin.getDescription().getVersion())) {
             message = Collections.singletonList("No updates found for " + plugin.getName() + ".");
         }else {
             message = formatter;
@@ -149,8 +155,6 @@ public class UpdateChecker {
         new BukkitRunnable() {
             @Override
             public void run() {
-                Gson gson = new Gson();
-                update = gson.fromJson(reader, Update.class);
                 processMessage();
                 for (Player player : Bukkit.getOnlinePlayers()) {
                     if (Bukkit.getOnlinePlayers().size() > 0 && player.hasPermission("greetings.update")) {
