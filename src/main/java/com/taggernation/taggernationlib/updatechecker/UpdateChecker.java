@@ -16,6 +16,7 @@ import java.util.List;
 
 import static com.taggernation.taggernationlib.TaggerNationLib.messageFramework;
 
+@SuppressWarnings("unused")
 public class UpdateChecker {
     private final Plugin plugin;
     private int interval;

@@ -3,6 +3,7 @@ package com.taggernation.taggernationlib.vanish;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
 
+@SuppressWarnings("unused")
 public class VanishCheck {
   /**
    * @param player Player to check if they're vanished or not.

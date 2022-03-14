@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class Config {
 
     private final File file;

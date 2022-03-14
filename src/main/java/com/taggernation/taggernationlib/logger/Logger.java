@@ -10,6 +10,7 @@ import java.util.List;
 
 import static com.taggernation.taggernationlib.TaggerNationLib.*;
 
+@SuppressWarnings("unused")
 public class Logger {
     private final LegacyComponentSerializer legecySerializer = LegacyComponentSerializer.builder().hexColors().useUnusualXRepeatedCharacterHexFormat().build();
     String pluginName = adventureFormat("<gradient:#cf1a91:#fbdbf4>[ </gradient>" + " <white><bold>" + "<pluginName>" + " </white></bold>" + "<gradient:#cf1a91:#fbdbf4> ]</gradient>  <red>➜  </red>");

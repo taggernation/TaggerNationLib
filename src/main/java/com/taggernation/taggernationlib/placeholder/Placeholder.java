@@ -6,6 +6,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class Placeholder {
 
     /**
