@@ -30,19 +30,27 @@ public class UpdateChecker {
     private List<String> message = new ArrayList<>();
     private String permission = null;
     private boolean opNotify = false;
+    private final URL url;
     Gson gson = new Gson();
 
+    public void setReader(InputStreamReader reader) {
+        this.reader = reader;
+    }
+
+    InputStreamReader reader;
     /**
      * Initialize the update checker for the plugin.
      * @param plugin The plugin to check for an update for
      * @param url Json file URL to check for an update
      * @param interval The interval to check for an update in ticks
      */
-    public UpdateChecker(Plugin plugin, URL url, int interval) throws IOException {
+    public UpdateChecker(Plugin plugin, URL url, int interval)  throws IOException {
         this.plugin = plugin;
         this.interval = interval;
+        this.url = url;
         this.instance = this;
-        InputStreamReader reader = new InputStreamReader(url.openStream());
+        reader = new InputStreamReader(url.openStream());
+        plugin.getServer().getPluginManager().registerEvents(new UpdateListener(this), plugin);
         this.update = gson.fromJson(reader, Update.class);
     }
 
@@ -69,7 +77,7 @@ public class UpdateChecker {
             }
             formatter.add(list);
         }
-        if(Double.parseDouble(update.version) >= Double.parseDouble(plugin.getDescription().getVersion())) {
+        if(Double.parseDouble(update.version) <= Double.parseDouble(plugin.getDescription().getVersion())) {
             message = Collections.singletonList("No updates found for " + plugin.getName() + ".");
         }else {
             message = formatter;
@@ -162,6 +170,14 @@ public class UpdateChecker {
                     }
                 }
                 new Logger(plugin).info(message, true);
+                try {
+                    reader = new InputStreamReader(url.openStream());
+                    setReader(reader);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                update = gson.fromJson(reader, Update.class);
+                setUpdate(update);
             }
         }.runTaskTimerAsynchronously(plugin, 0, interval);
     }
