@@ -2,6 +2,7 @@ package com.taggernation.taggernationlib.updatechecker;
 
 import com.google.gson.Gson;
 import com.taggernation.taggernationlib.logger.Logger;
+import com.taggernation.taggernationlib.updatechecker.downloads.DownloadManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -31,13 +32,14 @@ public class UpdateChecker {
     private String permission = null;
     private boolean opNotify = false;
     private final URL url;
+    private DownloadManager downloadManager = null;
     Gson gson = new Gson();
 
-    public void setReader(InputStreamReader reader) {
+    private void setReader(InputStreamReader reader) {
         this.reader = reader;
     }
 
-    InputStreamReader reader;
+    private InputStreamReader reader;
     /**
      * Initialize the update checker for the plugin.
      * @param plugin The plugin to check for an update for
@@ -109,6 +111,14 @@ public class UpdateChecker {
     }
 
     /**
+     * Check if an update is available
+     * @return true if an update is available
+     */
+    public boolean isUpdateAvailable() {
+        return !(Double.parseDouble(update.version) <= Double.parseDouble(plugin.getDescription().getVersion()));
+    }
+
+    /**
      * Check for update on players with permission join.
      */
     public UpdateChecker enableOnJoin() {
@@ -152,8 +162,24 @@ public class UpdateChecker {
     /**
      * Set up the update checker.
      */
-    public UpdateChecker setup() {
+    public void setup() {
         checkForUpdate();
+    }
+
+    /**
+     * If provided when an update is available. latest update will download automatically.
+     * @param directDownloadLink DirectLink to the latest file
+     */
+    public UpdateChecker downloadLatestUpdate(URL directDownloadLink) {
+        this.downloadManager = new DownloadManager(this, url);
+        return this;
+    }
+    /**
+     * Set file to overwrite the default one.
+     * @param overwrite true to overwrite the default file, false to not
+     */
+    public UpdateChecker setOverwrite(boolean overwrite) {
+        this.downloadManager.setOverwrite(overwrite);
         return this;
     }
     /**
