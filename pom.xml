@@ -6,7 +6,7 @@
 
     <groupId>com.taggernation</groupId>
     <artifactId>TaggerNationLib</artifactId>
-    <version>1</version>
+    <version>0.1</version>
     <packaging>jar</packaging>
 
     <name>TaggerNationLib</name>
@@ -17,6 +17,7 @@
     </properties>
 
     <build>
+        <finalName>TaggerNationLib</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
