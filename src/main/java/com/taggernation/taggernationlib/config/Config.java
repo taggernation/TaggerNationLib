@@ -22,12 +22,15 @@ public class Config {
      * @param plugin Instance of the plugin you want to initialize the config for
      * @param fileName String
      * @param force boolean enable/disable force file update
+     * @param copy boolean either copy the file from the plugin or not
      */
-    public Config(Plugin plugin, String fileName, boolean force) {
+    public Config(Plugin plugin, String fileName, boolean force, boolean copy) {
         this.plugin = plugin;
         this.file = new File(plugin.getDataFolder(), fileName);
         this.config = YamlConfiguration.loadConfiguration(this.file);
-        copy(force);
+        if (copy) {
+            copy(force);
+        }
     }
 
     /**
@@ -36,12 +39,15 @@ public class Config {
      * @param fileName String
      * @param path String path you want to initialize the config in
      * @param force boolean enable/disable force file update
+     * @param copy boolean either copy the file from the plugin or not
      */
-    public Config(Plugin plugin, String fileName, String path, boolean force) {
+    public Config(Plugin plugin, String fileName, String path, boolean force, boolean copy) {
         this.plugin = plugin;
-        this.file = new File(path, fileName);
+        this.file = new File(plugin.getDataFolder() + File.separator + path, fileName);
         this.config = YamlConfiguration.loadConfiguration(this.file);
-        copy(force, path);
+        if (copy) {
+            copy(force, path);
+        }
     }
 
     /**
