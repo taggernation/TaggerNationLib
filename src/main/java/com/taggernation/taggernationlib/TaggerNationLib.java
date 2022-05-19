@@ -1,8 +1,7 @@
 package com.taggernation.taggernationlib;
 
 import com.taggernation.taggernationlib.placeholder.Placeholder;
-import io.github.alen_alex.messageframework.MessageFramework;
-import io.github.alen_alex.messageframework.bukkit.framework.FrameworkBuilder;
+import io.github.alenalex.adventurelib.spigot.impl.SpigotMessenger;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -16,7 +15,7 @@ public class TaggerNationLib extends JavaPlugin {
 
     public static TaggerNationLib plugin;
     public static Placeholder papiHook;
-    public static MessageFramework messageFramework;
+    public static SpigotMessenger messenger;
     public static MiniMessage miniMessage;
 
     public void papiExist() {
@@ -32,7 +31,12 @@ public class TaggerNationLib extends JavaPlugin {
         // Plugin startup logic
         plugin = this;
         papiHook = new Placeholder();
-        messageFramework = new FrameworkBuilder().setPlugin(this).withMiniMessageEngine().build();
+//        messageFramework = new FrameworkBuilder().setPlugin(this).withMiniMessageEngine().build();
+        messenger = SpigotMessenger
+                .builder()
+                .setPlugin(this)
+                .defaultToMiniMessageTranslator()
+                .build();
         miniMessage = MiniMessage.builder().build();
         papiExist();
     }
