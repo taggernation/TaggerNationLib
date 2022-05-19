@@ -70,6 +70,10 @@
                             <pattern>co.aikar.locales</pattern>
                             <shadedPattern>com.taggernation.libs.aikar.locales</shadedPattern> <!-- Replace this -->
                         </relocation>
+                        <relocation>
+                            <pattern>dev.dejvokep.boostedyaml</pattern>
+                            <shadedPattern>com.taggernation.libs.boostedyaml</shadedPattern>
+                        </relocation>
                     </relocations>
                 </configuration>
                 <executions>
@@ -125,6 +129,11 @@
         <repository>
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
+        </repository>
+        <repository>
+            <id>repo.alenalex-snapshots</id>
+<!--            <name>repository.alen.alex.me</name>-->
+            <url>https://repo.alenalex.me/snapshots</url>
         </repository>
     </repositories>
 
@@ -210,6 +219,16 @@
             <artifactId>acf-paper</artifactId>
             <version>0.5.1-SNAPSHOT</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>dev.dejvokep</groupId>
+            <artifactId>boosted-yaml</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.alenalex.adventurelib.spigot</groupId>
+            <artifactId>adventurelib-spigot</artifactId>
+            <version>1.2-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
