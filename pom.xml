@@ -48,15 +48,15 @@
                         </relocation>
                         <relocation>
                             <pattern>net.kyori</pattern>
-                            <shadedPattern>com.taggernation.libs.adventure</shadedPattern> <!-- Replace this -->
+                            <shadedPattern>com.taggernation.libs.kyori</shadedPattern> <!-- Replace this -->
                         </relocation>
                         <relocation>
                             <pattern>com.google.code.gson</pattern>
                             <shadedPattern>com.taggernation.libs.gson</shadedPattern> <!-- Replace this -->
                         </relocation>
                         <relocation>
-                            <pattern>io.github.alen_alex</pattern>
-                            <shadedPattern>com.taggernation.libs.alen_alex</shadedPattern> <!-- Replace this -->
+                            <pattern>com.github.RealRONiN</pattern>
+                            <shadedPattern>com.taggernation.libs.adventure</shadedPattern> <!-- Replace this -->
                         </relocation>
                         <relocation>
                             <pattern>dev.vankka</pattern>
@@ -88,6 +88,14 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.1</version>
+                <configuration>
+                    <outputDirectory>C:\Users\anike\OneDrive\Desktop\TGN SV\plugins</outputDirectory>
+                </configuration>
+            </plugin>
         </plugins>
         <resources>
             <resource>
@@ -111,16 +119,8 @@
             <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
         <repository>
-            <id>repo</id>
-            <url>https://repo.mattstudios.me/artifactory/public/</url>
-        </repository>
-        <repository>
             <id>papermc</id>
             <url>https://papermc.io/repo/repository/maven-public/</url>
-        </repository>
-        <repository>
-            <id>repo-alenalex</id>
-            <url>https://repo.alenalex.me/releases/</url>
         </repository>
         <repository>
             <id>aikar</id>
@@ -153,7 +153,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.22</version>
+            <version>1.18.24</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -200,13 +200,8 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.8.9</version>
+            <version>2.9.0</version>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.github.alen_alex</groupId>
-            <artifactId>MessageFramework</artifactId>
-            <version>1.0.5-BETA</version>
         </dependency>
         <dependency>
             <groupId>dev.vankka</groupId>
