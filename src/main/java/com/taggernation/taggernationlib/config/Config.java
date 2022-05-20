@@ -42,13 +42,18 @@ public class Config {
      * @param force boolean enable/disable force file update
      * @param copy boolean either copy the file from the plugin or not
      */
-    public Config(Plugin plugin, String fileName, boolean force, boolean copy) {
+    public Config(Plugin plugin, String fileName, boolean force, boolean copy) throws IOException {
         this.plugin = plugin;
         this.file = new File(plugin.getDataFolder(), fileName);
-        this.config = YamlConfiguration.loadConfiguration(this.file);
         if (copy) {
             copy(force);
         }
+        if (!file.exists()) {
+            if (file.createNewFile()) {
+                plugin.getLogger().info("Created new file: " + file.getName());
+            }
+        }
+        this.config = YamlConfiguration.loadConfiguration(this.file);
     }
 
     /**
@@ -59,13 +64,19 @@ public class Config {
      * @param force boolean enable/disable force file update
      * @param copy boolean either copy the file from the plugin or not
      */
-    public Config(Plugin plugin, String fileName, String path, boolean force, boolean copy) {
+    public Config(Plugin plugin, String fileName, String path, boolean force, boolean copy) throws IOException {
         this.plugin = plugin;
+        String filePath = plugin.getDataFolder() + File.separator + path;
         this.file = new File(plugin.getDataFolder() + File.separator + path, fileName);
-        this.config = YamlConfiguration.loadConfiguration(this.file);
         if (copy) {
             copy(force, path);
         }
+        if (!file.exists()) {
+            if (file.createNewFile()) {
+                plugin.getLogger().info("Created new file: " + file.getName());
+            }
+        }
+        this.config = YamlConfiguration.loadConfiguration(this.file);
     }
 
     /**

@@ -35,6 +35,11 @@ import java.util.List;
 
 import static com.taggernation.taggernationlib.TaggerNationLib.messenger;
 
+/*
+ * Json update checker
+ * 
+ * To-Do DownloadManager
+ */
 @SuppressWarnings("unused")
 public class UpdateChecker {
   private final Plugin plugin;
@@ -50,6 +55,7 @@ public class UpdateChecker {
   private String permission = null;
   private boolean opNotify = false;
   private final URL url;
+  @Deprecated
   private DownloadManager downloadManager = null;
   Gson gson = new Gson();
 
@@ -200,6 +206,7 @@ public class UpdateChecker {
    *
    * @param directDownloadLink DirectLink to the latest file
    */
+  @Deprecated
   public UpdateChecker downloadLatestUpdate(URL directDownloadLink) {
     this.downloadManager = new DownloadManager(this, url);
     return this;
@@ -210,6 +217,7 @@ public class UpdateChecker {
    *
    * @param overwrite true to overwrite the default file, false to not
    */
+  @Deprecated
   public UpdateChecker setOverwrite(boolean overwrite) {
     this.downloadManager.setOverwrite(overwrite);
     return this;
