@@ -29,6 +29,7 @@ import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 
+@Deprecated
 public class DownloadManager {
 
     private final URL url;
