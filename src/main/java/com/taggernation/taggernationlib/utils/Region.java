@@ -8,22 +8,22 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 /**
- * This class is a region/Cuboid from one location to another. Used to create protected regions and things like WorldEdit.
+ * This class is a region/Region from one location to another. Used to create protected regions and things like WorldEdit.
  * @author desht (Original code), Edward (Editor of code)
  */
-public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializable {
+public class Region implements Iterable<Block>, Cloneable, ConfigurationSerializable {
     protected final String worldName;
     protected final int x1, y1, z1;
     protected final int x2, y2, z2;
 
     /**
-     * Construct a Cuboid given two Location objects which represent any two corners of the Cuboid.
+     * Construct a Region given two Location objects which represent any two corners of the Region.
      * Note: The 2 locations must be on the same world.
      *
      * @param location1 - One of the corners
      * @param location2 - The other corner
      */
-    public Cuboid(Location location1, Location location2) {
+    public Region(Location location1, Location location2) {
         if (!Objects.equals(location1.getWorld(), location2.getWorld())) throw new IllegalArgumentException("Locations must be on the same world");
         this.worldName = Objects.requireNonNull(location1.getWorld()).getName();
         this.x1 = Math.min(location1.getBlockX(), location2.getBlockX());
@@ -35,27 +35,27 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     }
 
     /**
-     * Construct a one-block Cuboid at the given Location of the Cuboid.
+     * Construct a one-block Region at the given Location of the Region.
      *
-     * @param location1 location of the Cuboid
+     * @param location1 location of the Region
      */
-    public Cuboid(Location location1) {
+    public Region(Location location1) {
         this(location1, location1);
     }
 
     /**
      * Copy constructor.
      *
-     * @param other - The Cuboid to copy
+     * @param other - The Region to copy
      */
-    public Cuboid(Cuboid other, String worldName) {
+    public Region(Region other, String worldName) {
         this(worldName, other.x1, other.y1, other.z1, other.x2, other.y2, other.z2);
     }
 
     /**
-     * Construct a Cuboid in the given World and xyz co-ordinates
+     * Construct a Region in the given World and xyz co-ordinates
      *
-     * @param world - The Cuboid's world
+     * @param world - The Region's world
      * @param x1 - X co-ordinate of corner 1
      * @param y1 - Y co-ordinate of corner 1
      * @param z1 - Z co-ordinate of corner 1
@@ -63,7 +63,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
      * @param y2 - Y co-ordinate of corner 2
      * @param z2 - Z co-ordinate of corner 2
      */
-    public Cuboid(World world, int x1, int y1, int z1, int x2, int y2, int z2) {
+    public Region(World world, int x1, int y1, int z1, int x2, int y2, int z2) {
         this.worldName = world.getName();
         this.x1 = Math.min(x1, x2);
         this.x2 = Math.max(x1, x2);
@@ -74,9 +74,9 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     }
 
     /**
-     * Construct a Cuboid in the given world name and xyz co-ordinates.
+     * Construct a Region in the given world name and xyz co-ordinates.
      *
-     * @param worldName - The Cuboid's world name
+     * @param worldName - The Region's world name
      * @param x1 - X co-ordinate of corner 1
      * @param y1 - Y co-ordinate of corner 1
      * @param z1 - Z co-ordinate of corner 1
@@ -84,7 +84,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
      * @param y2 - Y co-ordinate of corner 2
      * @param z2 - Z co-ordinate of corner 2
      */
-    private Cuboid(String worldName, int x1, int y1, int z1, int x2, int y2, int z2) {
+    private Region(String worldName, int x1, int y1, int z1, int x2, int y2, int z2) {
         this.worldName = worldName;
         this.x1 = Math.min(x1, x2);
         this.x2 = Math.max(x1, x2);
@@ -95,10 +95,10 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     }
 
     /**
-     * Construct a Cuboid using a map with the following keys: worldName, x1, x2, y1, y2, z1, z2
+     * Construct a Region using a map with the following keys: worldName, x1, x2, y1, y2, z1, z2
      * @param map - The map of keys.
      */
-    public Cuboid(Map<String, Object> map) {
+    public Region(Map<String, Object> map) {
         this.worldName = (String) map.get("worldName");
         this.x1 = (Integer) map.get("x1");
         this.x2 = (Integer) map.get("x2");
@@ -122,7 +122,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     }
 
     /**
-     * Get the Location of the lower northeast corner of the Cuboid (minimum XYZ co-ordinates).
+     * Get the Location of the lower northeast corner of the Region (minimum XYZ co-ordinates).
      *
      * @return Location of the lower northeast corner
      */
@@ -131,7 +131,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     }
 
     /**
-     * Get the Location of the upper southwest corner of the Cuboid (maximum XYZ co-ordinates).
+     * Get the Location of the upper southwest corner of the Region (maximum XYZ co-ordinates).
      *
      * @return Location of the upper southwest corner
      */
@@ -140,9 +140,9 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     }
 
     /**
-     * Get the blocks in the Cuboid.
+     * Get the blocks in the Region.
      *
-     * @return The blocks in the Cuboid
+     * @return The blocks in the Region
      */
     public List<Block> getBlocks() {
         Iterator<Block> blockIterator = this.iterator();
@@ -153,9 +153,9 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     } 
 
     /**
-     * Get the the centre of the Cuboid.
+     * Get the the centre of the Region.
      *
-     * @return Location at the centre of the Cuboid
+     * @return Location at the centre of the Region
      */
     public Location getCenter() {
         int x1 = this.getUpperX() + 1;
@@ -165,9 +165,9 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     }
 
     /**
-     * Get the Cuboid's world.
+     * Get the Region's world.
      *
-     * @return The World object representing this Cuboid's world
+     * @return The World object representing this Region's world
      * @throws IllegalStateException if the world is not loaded
      */
     public World getWorld() {
@@ -177,34 +177,34 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     }
 
     /**
-     * Get the size of this Cuboid along the X axis
+     * Get the size of this Region along the X axis
      *
-     * @return	Size of Cuboid along the X axis
+     * @return	Size of Region along the X axis
      */
     public int getSizeX() {
         return (this.x2 - this.x1) + 1;
     }
 
     /**
-     * Get the size of this Cuboid along the Y axis
+     * Get the size of this Region along the Y axis
      *
-     * @return	Size of Cuboid along the Y axis
+     * @return	Size of Region along the Y axis
      */
     public int getSizeY() {
         return (this.y2 - this.y1) + 1;
     }
 
     /**
-     * Get the size of this Cuboid along the Z axis
+     * Get the size of this Region along the Z axis
      *
-     * @return	Size of Cuboid along the Z axis
+     * @return	Size of Region along the Z axis
      */
     public int getSizeZ() {
         return (this.z2 - this.z1) + 1;
     }
 
     /**
-     * Get the minimum X co-ordinate of this Cuboid
+     * Get the minimum X co-ordinate of this Region
      *
      * @return	the minimum X co-ordinate
      */
@@ -213,7 +213,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     }
 
     /**
-     * Get the minimum Y co-ordinate of this Cuboid
+     * Get the minimum Y co-ordinate of this Region
      *
      * @return	the minimum Y co-ordinate
      */
@@ -222,7 +222,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     }
 
     /**
-     * Get the minimum Z co-ordinate of this Cuboid
+     * Get the minimum Z co-ordinate of this Region
      *
      * @return	the minimum Z co-ordinate
      */
@@ -231,7 +231,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     }
 
     /**
-     * Get the maximum X co-ordinate of this Cuboid
+     * Get the maximum X co-ordinate of this Region
      *
      * @return	the maximum X co-ordinate
      */
@@ -240,7 +240,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     }
 
     /**
-     * Get the maximum Y co-ordinate of this Cuboid
+     * Get the maximum Y co-ordinate of this Region
      *
      * @return	the maximum Y co-ordinate
      */
@@ -249,7 +249,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     }
 
     /**
-     * Get the maximum Z co-ordinate of this Cuboid
+     * Get the maximum Z co-ordinate of this Region
      *
      * @return	the maximum Z co-ordinate
      */
@@ -258,9 +258,9 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     }
 
     /**
-     * Get the Blocks at the eight corners of the Cuboid.
+     * Get the Blocks at the eight corners of the Region.
      *
-     * @return array of Block objects representing the Cuboid corners
+     * @return array of Block objects representing the Region corners
      */
     public Block[] corners() {
         Block[] blocks = new Block[8];
@@ -277,90 +277,90 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     }
 
     /**
-     * Expand the Cuboid in the given direction by the given amount.  Negative amounts will shrink the Cuboid in the given direction.  Shrinking a cuboid's face past the opposite face is not an error and will return a valid Cuboid.
+     * Expand the Region in the given direction by the given amount.  Negative amounts will shrink the Region in the given direction.  Shrinking a cuboid's face past the opposite face is not an error and will return a valid Region.
      *
      * @param direction - The direction in which to expand
      * @param amount - The number of blocks by which to expand
-     * @return A new Cuboid expanded by the given direction and amount
+     * @return A new Region expanded by the given direction and amount
      */
-    public Cuboid expand(CuboidDirection direction, int amount) {
+    public Region expand(RegionDirection direction, int amount) {
         return switch (direction) {
-            case North -> new Cuboid(this.worldName, this.x1 - amount, this.y1, this.z1, this.x2, this.y2, this.z2);
-            case South -> new Cuboid(this.worldName, this.x1, this.y1, this.z1, this.x2 + amount, this.y2, this.z2);
-            case East -> new Cuboid(this.worldName, this.x1, this.y1, this.z1 - amount, this.x2, this.y2, this.z2);
-            case West -> new Cuboid(this.worldName, this.x1, this.y1, this.z1, this.x2, this.y2, this.z2 + amount);
-            case Down -> new Cuboid(this.worldName, this.x1, this.y1 - amount, this.z1, this.x2, this.y2, this.z2);
-            case Up -> new Cuboid(this.worldName, this.x1, this.y1, this.z1, this.x2, this.y2 + amount, this.z2);
+            case North -> new Region(this.worldName, this.x1 - amount, this.y1, this.z1, this.x2, this.y2, this.z2);
+            case South -> new Region(this.worldName, this.x1, this.y1, this.z1, this.x2 + amount, this.y2, this.z2);
+            case East -> new Region(this.worldName, this.x1, this.y1, this.z1 - amount, this.x2, this.y2, this.z2);
+            case West -> new Region(this.worldName, this.x1, this.y1, this.z1, this.x2, this.y2, this.z2 + amount);
+            case Down -> new Region(this.worldName, this.x1, this.y1 - amount, this.z1, this.x2, this.y2, this.z2);
+            case Up -> new Region(this.worldName, this.x1, this.y1, this.z1, this.x2, this.y2 + amount, this.z2);
             default -> throw new IllegalArgumentException("Invalid direction " + direction);
         };
     }
 
     /**
-     * Shift the Cuboid in the given direction by the given amount.
+     * Shift the Region in the given direction by the given amount.
      *
      * @param direction - The direction in which to shift
      * @param amount - The number of blocks by which to shift
-     * @return A new Cuboid shifted by the given direction and amount
+     * @return A new Region shifted by the given direction and amount
      */
-    public Cuboid shift(CuboidDirection direction, int amount) {
+    public Region shift(RegionDirection direction, int amount) {
         return expand(direction, amount).expand(direction.opposite(), -amount);
     }
 
     /**
-     * Outset (grow) the Cuboid in the given direction by the given amount.
+     * Outset (grow) the Region in the given direction by the given amount.
      *
      * @param direction - The direction in which to outset (must be Horizontal, Vertical, or Both)
      * @param amount - The number of blocks by which to outset
-     * @return A new Cuboid outset by the given direction and amount
+     * @return A new Region outset by the given direction and amount
      */
-    public Cuboid outset(CuboidDirection direction, int amount) {
+    public Region outset(RegionDirection direction, int amount) {
         return switch (direction) {
-            case Horizontal -> expand(CuboidDirection.North, amount).expand(CuboidDirection.South, amount).expand(CuboidDirection.East, amount).expand(CuboidDirection.West, amount);
-            case Vertical -> expand(CuboidDirection.Down, amount).expand(CuboidDirection.Up, amount);
-            case Both -> outset(CuboidDirection.Horizontal, amount).outset(CuboidDirection.Vertical, amount);
+            case Horizontal -> expand(RegionDirection.North, amount).expand(RegionDirection.South, amount).expand(RegionDirection.East, amount).expand(RegionDirection.West, amount);
+            case Vertical -> expand(RegionDirection.Down, amount).expand(RegionDirection.Up, amount);
+            case Both -> outset(RegionDirection.Horizontal, amount).outset(RegionDirection.Vertical, amount);
             default -> throw new IllegalArgumentException("Invalid direction " + direction);
         };
     }
 
     /**
-     * Inset (shrink) the Cuboid in the given direction by the given amount.  Equivalent
+     * Inset (shrink) the Region in the given direction by the given amount.  Equivalent
      * to calling outset() with a negative amount.
      *
      * @param direction - The direction in which to inset (must be Horizontal, Vertical, or Both)
      * @param amount - The number of blocks by which to inset
-     * @return A new Cuboid inset by the given direction and amount
+     * @return A new Region inset by the given direction and amount
      */
-    public Cuboid inset(CuboidDirection direction, int amount) {
+    public Region inset(RegionDirection direction, int amount) {
         return this.outset(direction, -amount);
     }
 
     /**
-     * Return true if the point at (x,y,z) is contained within this Cuboid.
+     * Return true if the point at (x,y,z) is contained within this Region.
      *
      * @param x	- The X co-ordinate
      * @param y	- The Y co-ordinate
      * @param z	- The Z co-ordinate
-     * @return true if the given point is within this Cuboid, false otherwise
+     * @return true if the given point is within this Region, false otherwise
      */
     public boolean contains(int x, int y, int z) {
         return x >= this.x1 && x <= this.x2 && y >= this.y1 && y <= this.y2 && z >= this.z1 && z <= this.z2;
     }
 
     /**
-     * Check if the given Block is contained within this Cuboid.
+     * Check if the given Block is contained within this Region.
      *
      * @param block	- The Block to check for
-     * @return true if the Block is within this Cuboid, false otherwise
+     * @return true if the Block is within this Region, false otherwise
      */
     public boolean contains(Block block) {
         return this.contains(block.getLocation());
     }
 
     /**
-     * Check if the given Location is contained within this Cuboid.
+     * Check if the given Location is contained within this Region.
      *
      * @param location	- The Location to check for
-     * @return true if the Location is within this Cuboid, false otherwise
+     * @return true if the Location is within this Region, false otherwise
      */
     public boolean contains(Location location) {
         if (!this.worldName.equals(Objects.requireNonNull(location.getWorld()).getName())) return false;
@@ -368,18 +368,18 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     }
 
     /**
-     * Get the volume of this Cuboid.
+     * Get the volume of this Region.
      *
-     * @return The Cuboid volume, in blocks
+     * @return The Region volume, in blocks
      */
     public int getVolume() {
         return this.getSizeX() * this.getSizeY() * this.getSizeZ();
     }
 
     /**
-     * Get the average light level of all empty (air) blocks in the Cuboid.  Returns 0 if there are no empty blocks.
+     * Get the average light level of all empty (air) blocks in the Region.  Returns 0 if there are no empty blocks.
      *
-     * @return The average light level of this Cuboid
+     * @return The average light level of this Region
      */
     public byte getAverageLightLevel() {
         long total = 0;
@@ -394,87 +394,87 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     }
 
     /**
-     * Contract the Cuboid, returning a Cuboid with any air around the edges removed, just large enough to include all non-air blocks.
+     * Contract the Region, returning a Region with any air around the edges removed, just large enough to include all non-air blocks.
      *
-     * @return A new Cuboid with no external air blocks
+     * @return A new Region with no external air blocks
      */
-    public Cuboid contract() {
-        return this.contract(CuboidDirection.Down).contract(CuboidDirection.South).contract(CuboidDirection.East).contract(CuboidDirection.Up).contract(CuboidDirection.North).contract(CuboidDirection.West);
+    public Region contract() {
+        return this.contract(RegionDirection.Down).contract(RegionDirection.South).contract(RegionDirection.East).contract(RegionDirection.Up).contract(RegionDirection.North).contract(RegionDirection.West);
     }
 
     /**
-     * Contract the Cuboid in the given direction, returning a new Cuboid which has no exterior empty space.
+     * Contract the Region in the given direction, returning a new Region which has no exterior empty space.
      * E.g. A direction of Down will push the top face downwards as much as possible.
      *
      * @param dir - The direction in which to contract
-     * @return A new Cuboid contracted in the given direction
+     * @return A new Region contracted in the given direction
      */
-    public Cuboid contract(CuboidDirection dir) {
-        Cuboid face = getFace(dir.opposite());
+    public Region contract(RegionDirection dir) {
+        Region face = getFace(dir.opposite());
         switch (dir) {
             case Down -> {
                 while (face.containsOnly(Material.AIR) && face.getLowerY() > this.getLowerY()) {
-                    face = face.shift(CuboidDirection.Down, 1);
+                    face = face.shift(RegionDirection.Down, 1);
                 }
-                return new Cuboid(this.worldName, this.x1, this.y1, this.z1, this.x2, face.getUpperY(), this.z2);
+                return new Region(this.worldName, this.x1, this.y1, this.z1, this.x2, face.getUpperY(), this.z2);
             }
             case Up -> {
                 while (face.containsOnly(Material.AIR) && face.getUpperY() < this.getUpperY()) {
-                    face = face.shift(CuboidDirection.Up, 1);
+                    face = face.shift(RegionDirection.Up, 1);
                 }
-                return new Cuboid(this.worldName, this.x1, face.getLowerY(), this.z1, this.x2, this.y2, this.z2);
+                return new Region(this.worldName, this.x1, face.getLowerY(), this.z1, this.x2, this.y2, this.z2);
             }
             case North -> {
                 while (face.containsOnly(Material.AIR) && face.getLowerX() > this.getLowerX()) {
-                    face = face.shift(CuboidDirection.North, 1);
+                    face = face.shift(RegionDirection.North, 1);
                 }
-                return new Cuboid(this.worldName, this.x1, this.y1, this.z1, face.getUpperX(), this.y2, this.z2);
+                return new Region(this.worldName, this.x1, this.y1, this.z1, face.getUpperX(), this.y2, this.z2);
             }
             case South -> {
                 while (face.containsOnly(Material.AIR) && face.getUpperX() < this.getUpperX()) {
-                    face = face.shift(CuboidDirection.South, 1);
+                    face = face.shift(RegionDirection.South, 1);
                 }
-                return new Cuboid(this.worldName, face.getLowerX(), this.y1, this.z1, this.x2, this.y2, this.z2);
+                return new Region(this.worldName, face.getLowerX(), this.y1, this.z1, this.x2, this.y2, this.z2);
             }
             case East -> {
                 while (face.containsOnly(Material.AIR) && face.getLowerZ() > this.getLowerZ()) {
-                    face = face.shift(CuboidDirection.East, 1);
+                    face = face.shift(RegionDirection.East, 1);
                 }
-                return new Cuboid(this.worldName, this.x1, this.y1, this.z1, this.x2, this.y2, face.getUpperZ());
+                return new Region(this.worldName, this.x1, this.y1, this.z1, this.x2, this.y2, face.getUpperZ());
             }
             case West -> {
                 while (face.containsOnly(Material.AIR) && face.getUpperZ() < this.getUpperZ()) {
-                    face = face.shift(CuboidDirection.West, 1);
+                    face = face.shift(RegionDirection.West, 1);
                 }
-                return new Cuboid(this.worldName, this.x1, this.y1, face.getLowerZ(), this.x2, this.y2, this.z2);
+                return new Region(this.worldName, this.x1, this.y1, face.getLowerZ(), this.x2, this.y2, this.z2);
             }
             default -> throw new IllegalArgumentException("Invalid direction " + dir);
         }
     }
 
     /**
-     * Get the Cuboid representing the face of this Cuboid.  The resulting Cuboid will be one block thick in the axis perpendicular to the requested face.
+     * Get the Region representing the face of this Region.  The resulting Region will be one block thick in the axis perpendicular to the requested face.
      *
-     * @param dir - which face of the Cuboid to get
-     * @return The Cuboid representing this Cuboid's requested face
+     * @param dir - which face of the Region to get
+     * @return The Region representing this Region's requested face
      */
-    public Cuboid getFace(CuboidDirection dir) {
+    public Region getFace(RegionDirection dir) {
         return switch (dir) {
-            case Down -> new Cuboid(this.worldName, this.x1, this.y1, this.z1, this.x2, this.y1, this.z2);
-            case Up -> new Cuboid(this.worldName, this.x1, this.y2, this.z1, this.x2, this.y2, this.z2);
-            case North -> new Cuboid(this.worldName, this.x1, this.y1, this.z1, this.x1, this.y2, this.z2);
-            case South -> new Cuboid(this.worldName, this.x2, this.y1, this.z1, this.x2, this.y2, this.z2);
-            case East -> new Cuboid(this.worldName, this.x1, this.y1, this.z1, this.x2, this.y2, this.z1);
-            case West -> new Cuboid(this.worldName, this.x1, this.y1, this.z2, this.x2, this.y2, this.z2);
+            case Down -> new Region(this.worldName, this.x1, this.y1, this.z1, this.x2, this.y1, this.z2);
+            case Up -> new Region(this.worldName, this.x1, this.y2, this.z1, this.x2, this.y2, this.z2);
+            case North -> new Region(this.worldName, this.x1, this.y1, this.z1, this.x1, this.y2, this.z2);
+            case South -> new Region(this.worldName, this.x2, this.y1, this.z1, this.x2, this.y2, this.z2);
+            case East -> new Region(this.worldName, this.x1, this.y1, this.z1, this.x2, this.y2, this.z1);
+            case West -> new Region(this.worldName, this.x1, this.y1, this.z2, this.x2, this.y2, this.z2);
             default -> throw new IllegalArgumentException("Invalid direction " + dir);
         };
     }
 
     /**
-     * Check if the Cuboid contains only blocks of the given type
+     * Check if the Region contains only blocks of the given type
      *
      * @param block - The block ID to check for
-     * @return true if this Cuboid contains only blocks of the given type
+     * @return true if this Region contains only blocks of the given type
      */
     public boolean containsOnly(Material block) {
         for (Block b : this) {
@@ -484,12 +484,12 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     }
 
     /**
-     * Get the Cuboid big enough to hold both this Cuboid and the given one.
+     * Get the Region big enough to hold both this Region and the given one.
      *
      * @param other - The other cuboid.
-     * @return A new Cuboid large enough to hold this Cuboid and the given Cuboid
+     * @return A new Region large enough to hold this Region and the given Region
      */
-    public Cuboid getBoundingCuboid(Cuboid other) {
+    public Region getBoundingRegion(Region other) {
         if (other == null) return this;
 
         int xMin = Math.min(this.getLowerX(), other.getLowerX());
@@ -499,11 +499,11 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
         int yMax = Math.max(this.getUpperY(), other.getUpperY());
         int zMax = Math.max(this.getUpperZ(), other.getUpperZ());
 
-        return new Cuboid(this.worldName, xMin, yMin, zMin, xMax, yMax, zMax);
+        return new Region(this.worldName, xMin, yMin, zMin, xMax, yMax, zMax);
     }
 
     /**
-     * Get a block relative to the lower NE point of the Cuboid.
+     * Get a block relative to the lower NE point of the Region.
      *
      * @param x	- The X co-ordinate
      * @param y	- The Y co-ordinate
@@ -515,7 +515,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     }
 
     /**
-     * Get a block relative to the lower NE point of the Cuboid in the given World.  This
+     * Get a block relative to the lower NE point of the Region in the given World.  This
      * version of getRelativeBlock() should be used if being called many times, to avoid
      * excessive calls to getWorld().
      *
@@ -551,21 +551,21 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
     }
 
     public Iterator<Block> iterator() {
-        return new CuboidIterator(this.getWorld(), this.x1, this.y1, this.z1, this.x2, this.y2, this.z2);
+        return new RegionIterator(this.getWorld(), this.x1, this.y1, this.z1, this.x2, this.y2, this.z2);
     }
 
     @Override
-    public Cuboid clone() throws CloneNotSupportedException {
-        Cuboid clone = (Cuboid) super.clone();
-        return new Cuboid(this,worldName);
+    public Region clone() throws CloneNotSupportedException {
+        Region clone = (Region) super.clone();
+        return new Region(this,worldName);
     }
 
     @Override
     public String toString() {
-        return "Cuboid: " + this.worldName + "," + this.x1 + "," + this.y1 + "," + this.z1 + "=>" + this.x2 + "," + this.y2 + "," + this.z2;
+        return "Region: " + this.worldName + "," + this.x1 + "," + this.y1 + "," + this.z1 + "=>" + this.x2 + "," + this.y2 + "," + this.z2;
     }
 
-    public static class CuboidIterator implements Iterator<Block> {
+    public static class RegionIterator implements Iterator<Block> {
         private final World w;
         private final int baseX;
         private final int baseY;
@@ -575,7 +575,7 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
         private final int sizeY;
         private final int sizeZ;
 
-        public CuboidIterator(World w, int x1, int y1, int z1, int x2, int y2, int z2) {
+        public RegionIterator(World w, int x1, int y1, int z1, int x2, int y2, int z2) {
             this.w = w;
             this.baseX = x1;
             this.baseY = y1;
@@ -606,10 +606,10 @@ public class Cuboid implements Iterable<Block>, Cloneable, ConfigurationSerializ
         }
     }
 
-    public enum CuboidDirection {
+    public enum RegionDirection {
         North, East, South, West, Up, Down, Horizontal, Vertical, Both, Unknown;
 
-        public CuboidDirection opposite() {
+        public RegionDirection opposite() {
             return switch (this) {
                 case North -> South;
                 case East -> West;
