@@ -46,7 +46,11 @@ public class Config {
         this.plugin = plugin;
         this.file = new File(plugin.getDataFolder(), fileName);
         if (copy) {
-            copy(force);
+            try {
+                copy(force);
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            }
         }
         if (!file.exists()) {
             if (file.createNewFile()) {
@@ -68,13 +72,15 @@ public class Config {
         this.plugin = plugin;
         String filePath = plugin.getDataFolder() + File.separator + path;
         this.file = new File(plugin.getDataFolder() + File.separator + path, fileName);
-        if (copy) {
-            copy(force, path);
-        }
         if (!file.exists()) {
-            if (file.createNewFile()) {
-                plugin.getLogger().info("Created new file: " + file.getName());
+            plugin.getLogger().info("creating new File");
+            plugin.getLogger().info("Creating folder: " + new File(plugin.getDataFolder() + File.separator + path).mkdirs());
+            if (copy) try {
+                copy(force, filePath);
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
             }
+            else plugin.getLogger().info("Creating file: " + file.createNewFile());
         }
         this.config = YamlConfiguration.loadConfiguration(this.file);
     }
