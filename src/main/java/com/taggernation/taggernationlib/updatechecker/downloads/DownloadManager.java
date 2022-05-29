@@ -18,56 +18,61 @@
 
 package com.taggernation.taggernationlib.updatechecker.downloads;
 
-import com.taggernation.taggernationlib.updatechecker.UpdateChecker;
-import org.bukkit.Bukkit;
+import org.apache.commons.io.FilenameUtils;
+import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.channels.Channels;
-import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 
-@Deprecated
+
 public class DownloadManager {
 
-    private final URL url;
-    private boolean overwrite;
+    URL downloadUrl;
+    boolean override;
+    Plugin plugin;
+    boolean downloadSuccess;
+    File pluginsDirectory;
 
-    public void setOverwrite(boolean overwrite) {
-        this.overwrite = overwrite;
+    public DownloadManager(URL downloadUrl, Plugin plugin) {
+        this.downloadUrl = downloadUrl;
+        this.plugin = plugin;
+        this.override = true;
+        this.downloadSuccess = false;
+        this.pluginsDirectory = new File("." + File.separatorChar + "plugins");
+    }
+    public void setOverride(boolean override) {
+        this.override = override;
+    }
+    public boolean getOverride() {
+        return override;
+    }
+    public String getDownloadUrl() {
+        return downloadUrl.toString();
+    }
+    public void setDownloadUrl(URL downloadUrl) {
+        this.downloadUrl = downloadUrl;
     }
 
-    public DownloadManager(UpdateChecker instance, URL url) {
-        this.url = url;
-    }
-    public void download() throws IOException {
-        File file = new File("rc24-java-logo.gif");
-        Bukkit.getLogger().info("Downloading file...");
-        if (checkFileExist(file) && !overwrite) {
-            Bukkit.getLogger().info("File already exists, skipping download.");
-            return;
+    public void initialize() throws IOException {
+        if (downloadUrl == null) {
+            throw new IllegalArgumentException("Download URL cannot be null");
         }
+        File outputFile = new File(pluginsDirectory, FilenameUtils.getName(downloadUrl.toString()));
 
-        ReadableByteChannel readableByteChannel = Channels.newChannel(url.openStream());
-        FileOutputStream fileOutputStream = new FileOutputStream(file);
-        FileChannel fileChannel = fileOutputStream.getChannel();
-        fileChannel.transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
-        fileChannel.close();
-        fileOutputStream.close();
-        readableByteChannel.close();
-        Bukkit.getLogger().info("Downloaded file: " + file.getPath() + "/" + file.getName());
+        if (downloadSuccess) return;
+        plugin.getLogger().info("Downloading Latest Version of " + plugin.getName() + "...");
 
-    }
-    public boolean checkFileExist(File file) {
-        return file.exists();
-    }
-    public boolean Delete (File file) {
-        if (file.exists()) {
-            return file.delete();
-        }
-        return false;
-    }
+        ReadableByteChannel byteChannel = Channels.newChannel(downloadUrl.openStream());
+        FileOutputStream outputStream = new FileOutputStream(outputFile);
+        outputStream.getChannel().transferFrom(byteChannel, 0, Long.MAX_VALUE);
+        byteChannel.close();
+        outputStream.close();
 
+        plugin.getLogger().info("Downloaded Latest Version of " + plugin.getName() + "!. Restart to apply changes.");
+        this.downloadSuccess = true;
+    }
 }
