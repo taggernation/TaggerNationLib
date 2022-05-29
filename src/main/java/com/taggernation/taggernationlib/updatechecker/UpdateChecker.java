@@ -37,7 +37,7 @@ import static com.taggernation.taggernationlib.TaggerNationLib.messenger;
 
 /*
  * Json update checker
- * 
+ *
  * To-Do DownloadManager
  */
 @SuppressWarnings("unused")
@@ -55,7 +55,6 @@ public class UpdateChecker {
   private String permission = null;
   private boolean opNotify = false;
   private final URL url;
-  @Deprecated
   private DownloadManager downloadManager = null;
   Gson gson = new Gson();
 
@@ -206,20 +205,18 @@ public class UpdateChecker {
    *
    * @param directDownloadLink DirectLink to the latest file
    */
-  @Deprecated
   public UpdateChecker downloadLatestUpdate(URL directDownloadLink) {
-    this.downloadManager = new DownloadManager(this, url);
+    this.downloadManager = new DownloadManager(directDownloadLink, plugin);
     return this;
   }
 
   /**
-   * Set file to overwrite the default one.
+   * Set file to overwrite the existing one. This option is set to true by default
    *
    * @param overwrite true to overwrite the default file, false to not
    */
-  @Deprecated
   public UpdateChecker setOverwrite(boolean overwrite) {
-    this.downloadManager.setOverwrite(overwrite);
+    this.downloadManager.setOverride(overwrite);
     return this;
   }
 
@@ -247,7 +244,12 @@ public class UpdateChecker {
         }
         update = gson.fromJson(reader, Update.class);
         setUpdate(update);
+        try {
+          downloadManager.initialize();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
       }
-    }.runTaskTimerAsynchronously(plugin, 0, interval);
+    }.runTaskTimerAsynchronously(plugin, 250, interval);
   }
 }
