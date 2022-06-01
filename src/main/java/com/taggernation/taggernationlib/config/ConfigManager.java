@@ -29,10 +29,10 @@ import java.io.IOException;
 import java.util.List;
 
 @SuppressWarnings("unused")
-public class Config {
+public class ConfigManager {
 
-    private final File file;
-    private final FileConfiguration config;
+    private File file;
+    private FileConfiguration config;
     private final Plugin plugin;
 
     /**
@@ -42,7 +42,7 @@ public class Config {
      * @param force boolean enable/disable force file update
      * @param copy boolean either copy the file from the plugin or not
      */
-    public Config(Plugin plugin, String fileName, boolean force, boolean copy) throws IOException {
+    public ConfigManager(Plugin plugin, String fileName, boolean force, boolean copy) throws IOException {
         this.plugin = plugin;
         this.file = new File(plugin.getDataFolder(), fileName);
         if (copy) {
@@ -68,7 +68,7 @@ public class Config {
      * @param force boolean enable/disable force file update
      * @param copy boolean either copy the file from the plugin or not
      */
-    public Config(Plugin plugin, String fileName, String path, boolean force, boolean copy) throws IOException {
+    public ConfigManager(Plugin plugin, String fileName, String path, boolean force, boolean copy) throws IOException {
         this.plugin = plugin;
         String filePath = plugin.getDataFolder() + File.separator + path;
         this.file = new File(plugin.getDataFolder() + File.separator + path, fileName);
@@ -143,22 +143,23 @@ public class Config {
      * Update the Config with the newer version of the file
      * @param currentVersion String
      * @param versionPath String
-     * @return boolean true if updated
-     * @throws IOException IOException
-     * @throws InvalidConfigurationException InvalidConfigurationException
      */
-    public boolean updateConfig(@NotNull String currentVersion, @NotNull String versionPath) throws IOException, InvalidConfigurationException {
-        String version = this.getString(versionPath);
-        if (version.equals(currentVersion)) {
+    public void updateConfig(@NotNull String currentVersion, @NotNull String versionPath) {
+        String version = null;
+        try {
+            version = this.getString(versionPath);
+        }catch (NullPointerException e) {
+            plugin.getLogger().info("No version found in config.yml... Creating new version of the config");
+        }
+        if (version == null || !version.equals(currentVersion)) {
             File newFile = new File(file.getParentFile(), "old_" + version + "_" + getFile().getName());
             File oldFile = getFile();
             if (oldFile.renameTo(newFile)) {
+                this.file = new File(plugin.getDataFolder(), getFile().getName());
                 plugin.saveResource(getFile().getName(), true);
-                reload();
-                return true;
+                this.config = YamlConfiguration.loadConfiguration(this.file);
             }
         }
-        return false;
     }
 
 
