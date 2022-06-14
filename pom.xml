@@ -6,7 +6,7 @@
 
     <groupId>com.taggernation</groupId>
     <artifactId>TaggerNationLib</artifactId>
-    <version>0.</version>
+    <version>0.1</version>
     <packaging>jar</packaging>
 
     <name>TaggerNationLib</name>
@@ -74,6 +74,10 @@
                             <pattern>dev.dejvokep.boostedyaml</pattern>
                             <shadedPattern>com.taggernation.libs.boostedyaml</shadedPattern>
                         </relocation>
+                        <relocation>
+                            <pattern>net.byteflux.libby</pattern>
+                            <shadedPattern>com.taggernation.libs.net.byteflux.libby</shadedPattern>
+                        </relocation>
                     </relocations>
                 </configuration>
                 <executions>
@@ -98,6 +102,10 @@
     </build>
 
     <repositories>
+        <repository>
+            <id>AlessioDP</id>
+            <url>https://repo.alessiodp.com/releases/</url>
+        </repository>
         <repository>
             <id>spigotmc-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
@@ -137,6 +145,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>net.byteflux</groupId>
+            <artifactId>libby-bukkit</artifactId> <!-- Replace bukkit if you're using another platform -->
+            <version>1.1.5</version>
+        </dependency>
+        <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.8.8-R0.1-SNAPSHOT</version>
@@ -162,27 +175,27 @@
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-api</artifactId>
-            <version>4.10.1</version>
+            <version>4.11.0</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-gson</artifactId>
-            <version>4.10.1</version>
+            <version>4.11.0</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-legacy</artifactId>
-            <version>4.10.1</version>
+            <version>4.11.0</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-serializer-plain</artifactId>
-            <version>4.10.1</version>
+            <version>4.11.0</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
             <artifactId>adventure-text-minimessage</artifactId>
-            <version>4.10.1</version>
+            <version>4.11.0</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
@@ -216,7 +229,7 @@
         <dependency>
             <groupId>dev.dejvokep</groupId>
             <artifactId>boosted-yaml</artifactId>
-            <version>1.1</version>
+            <version>1.2</version>
         </dependency>
         <dependency>
             <groupId>io.github.alenalex.adventurelib.spigot</groupId>
