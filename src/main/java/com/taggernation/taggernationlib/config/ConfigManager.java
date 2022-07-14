@@ -34,6 +34,7 @@ public class ConfigManager {
     private File file;
     private FileConfiguration config;
     private final Plugin plugin;
+    private String configVersion;
 
     /**
      * Initializes the Config.
@@ -85,6 +86,15 @@ public class ConfigManager {
         this.config = YamlConfiguration.loadConfiguration(this.file);
     }
 
+    /**
+     * Set the version of the config. useful for updating the config.
+     * @param configVersion Version of the config
+     * @return ConfigManager
+     */
+    public ConfigManager setConfigVersion(String configVersion) {
+        this.configVersion = configVersion;
+        return this;
+    }
     /**
      * Get Initialized file
      * @return File object
@@ -141,17 +151,16 @@ public class ConfigManager {
 
     /**
      * Update the Config with the newer version of the file
-     * @param currentVersion String
      * @param versionPath String
      */
-    public void updateConfig(@NotNull String currentVersion, @NotNull String versionPath) {
+    public void updateConfig( @NotNull String versionPath) {
         String version = null;
         try {
             version = this.getString(versionPath);
         }catch (NullPointerException e) {
             plugin.getLogger().info("No version found in config.yml... Creating new version of the config");
         }
-        if (version == null || !version.equals(currentVersion)) {
+        if (version == null || !version.equals(this.configVersion)) {
             File newFile = new File(file.getParentFile(), "old_" + version + "_" + getFile().getName());
             File oldFile = getFile();
             if (oldFile.renameTo(newFile)) {
@@ -179,7 +188,7 @@ public class ConfigManager {
     }
 
     /**
-     * Set the given path with given value.
+     * Set the given path with given value. And save the config.
      * @param path String
      * @param value Object
      */
@@ -206,6 +215,15 @@ public class ConfigManager {
         return config.getStringList(path);
     }
 
+    /**
+     * Add value to list of strings
+     * @param path Path to add string with node
+     * @param value String to add to list
+     */
+    public void addToStringList(String path, String value) {
+        set(path,getStringList(path).add(value));
+        save();
+    }
     /**
      * Get the given path as a boolean.
      * @param path String
