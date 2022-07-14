@@ -33,6 +33,7 @@ public class TaggerNationLib extends JavaPlugin {
 
     public static TaggerNationLib plugin;
     public static Placeholder papiHook;
+    @Getter
     public static SpigotMessenger messenger;
     public static MiniMessage miniMessage;
 

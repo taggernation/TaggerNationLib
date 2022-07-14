@@ -25,6 +25,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import static com.taggernation.taggernationlib.TaggerNationLib.messenger;
 
+
 public class UpdateListener implements Listener {
 
   private final UpdateChecker instance;
@@ -39,9 +40,7 @@ public class UpdateListener implements Listener {
     if ((player.isOp() && instance.isOpNotificationEnabled()) ||
             (instance.getNotificationPermission() != null &&
                     player.hasPermission(instance.getNotificationPermission()))) {
-      for (final String message : instance.getMessage()) {
-        messenger.sendMessage(player, message);
-      }
+      instance.getMessage().forEach(message -> messenger.sendMessage(player, message));
     }
   }
 }

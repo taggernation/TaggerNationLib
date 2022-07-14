@@ -19,7 +19,6 @@
 package com.taggernation.taggernationlib.updatechecker;
 
 import com.google.gson.Gson;
-import com.taggernation.taggernationlib.logger.Logger;
 import com.taggernation.taggernationlib.updatechecker.downloads.DownloadManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -56,7 +55,7 @@ public class UpdateChecker {
   private boolean opNotify = false;
   private final URL url;
   private DownloadManager downloadManager = null;
-  Gson gson = new Gson();
+  public Gson gson = new Gson();
 
   private void setReader(InputStreamReader reader) {
     this.reader = reader;
@@ -79,53 +78,6 @@ public class UpdateChecker {
     reader = new InputStreamReader(url.openStream());
     plugin.getServer().getPluginManager().registerEvents(new UpdateListener(this), plugin);
     this.update = gson.fromJson(reader, Update.class);
-  }
-
-  private void processMessage() {
-    List<String> formatter = new ArrayList<>();
-    for (String list : update.message) {
-      if (list.contains("{pluginName}")) {
-        list = list.replace("{pluginName}", plugin.getName());
-      }
-      if (list.contains("{pluginVersion}")) {
-        list = list.replace("{pluginVersion}", plugin.getDescription().getVersion());
-      }
-      if (list.contains("{updateLink}")) {
-        list = list.replace("{updateLink}", update.updateLink);
-      }
-      if (list.contains("{latestVersion}")) {
-        list = list.replace("{latestVersion}", update.version);
-      }
-      if (list.contains("{changeLog}")) {
-        list = list.replace("{changeLog}", String.join("\n", update.changeLog));
-      }
-      if (list.contains("{type}")) {
-        list = list.replace("{type}", getUpdateType());
-      }
-      formatter.add(list);
-    }
-    if (Double.parseDouble(update.version) <= Double.parseDouble(plugin.getDescription().getVersion())) {
-      message = Collections.singletonList("No updates found for " + plugin.getName() + ".");
-    } else {
-      message = formatter;
-    }
-  }
-
-  private String getUpdateType() {
-    if (update.hotFix) {
-      return "Hotfix";
-    } else if (update.bugFix) {
-      return "Bugfix";
-    } else if (update.newFeature) {
-      return "New Feature";
-    } else {
-      return "Update";
-    }
-
-  }
-
-  public List<String> getMessage() {
-    return message;
   }
 
   /**
@@ -229,13 +181,11 @@ public class UpdateChecker {
       public void run() {
         processMessage();
         for (Player player : Bukkit.getOnlinePlayers()) {
-          if (Bukkit.getOnlinePlayers().size() > 0 && player.hasPermission("greetings.update")) {
-            for (final String message : instance.getMessage()) {
-              messenger.sendMessage(player, message);
-            }
+          if (Bukkit.getOnlinePlayers().size() > 0 && player.hasPermission(getNotificationPermission())) {
+            getMessage().forEach(message -> messenger.sendMessage(player,message));
           }
         }
-        new Logger(plugin).info(message, true);
+        getMessage().forEach(message -> messenger.sendConsoleMessage(message));
         try {
           reader = new InputStreamReader(url.openStream());
           setReader(reader);
@@ -251,5 +201,51 @@ public class UpdateChecker {
         }
       }
     }.runTaskTimerAsynchronously(plugin, 250, interval);
+  }
+
+  private void processMessage() {
+    List<String> formatter = new ArrayList<>();
+    update.message.forEach(list -> {
+      if (list.contains("{pluginName}")) {
+        list = list.replace("{pluginName}", plugin.getName());
+      }
+      if (list.contains("{pluginVersion}")) {
+        list = list.replace("{pluginVersion}", plugin.getDescription().getVersion());
+      }
+      if (list.contains("{updateLink}")) {
+        list = list.replace("{updateLink}", update.updateLink);
+      }
+      if (list.contains("{latestVersion}")) {
+        list = list.replace("{latestVersion}", update.version);
+      }
+      if (list.contains("{changeLog}")) {
+        list = list.replace("{changeLog}", String.join("\n", update.changeLog));
+      }
+      if (list.contains("{type}")) {
+        list = list.replace("{type}", getUpdateType());
+      }
+      formatter.add(list);
+    });
+    if (Double.parseDouble(update.version) <= Double.parseDouble(plugin.getDescription().getVersion())) {
+      message = Collections.singletonList("No updates found for " + plugin.getName() + ".");
+    } else {
+      message = formatter;
+    }
+  }
+
+  private String getUpdateType() {
+    if (update.hotFix) {
+      return "Hotfix";
+    } else if (update.bugFix) {
+      return "Bugfix";
+    } else if (update.newFeature) {
+      return "New Feature";
+    } else {
+      return "Update";
+    }
+
+  }
+  public List<String> getMessage() {
+    return message;
   }
 }
