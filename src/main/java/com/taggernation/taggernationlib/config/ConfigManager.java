@@ -76,7 +76,7 @@ public class ConfigManager {
             plugin.getLogger().info("creating new File");
             plugin.getLogger().info("Creating folder: " + new File(plugin.getDataFolder() + File.separator + path).mkdirs());
             if (copy) try {
-                copy(force, filePath);
+                copy(force, path + File.separator + fileName);
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
             }
