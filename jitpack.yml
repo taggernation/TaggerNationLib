@@ -1,8 +1,4 @@
 jdk:
-  - openjdk15
-before_install:
-  - ./ensure-java-15 install
+  - openjdk14
 install:
-  - if ! ./ensure-java-15 use; then source ~/.sdkman/bin/sdkman-init.sh; fi
   - java -version
-  - ./mvnw -pl gwt,default install
