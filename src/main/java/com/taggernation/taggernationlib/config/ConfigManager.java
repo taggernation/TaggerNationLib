@@ -18,11 +18,11 @@
 
 package com.taggernation.taggernationlib.config;
 
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +34,9 @@ public class ConfigManager {
     private File file;
     private FileConfiguration config;
     private final Plugin plugin;
+    private final boolean isInFolder;
     private String configVersion;
+    private boolean consoleLogger = true;
 
     /**
      * Initializes the Config.
@@ -45,6 +47,10 @@ public class ConfigManager {
      */
     public ConfigManager(Plugin plugin, String fileName, boolean force, boolean copy) throws IOException {
         this.plugin = plugin;
+        process(plugin,fileName,force,copy);
+        isInFolder = false;
+    }
+    private void process(Plugin plugin, String fileName, boolean force, boolean copy) throws IOException {
         this.file = new File(plugin.getDataFolder(), fileName);
         if (copy) {
             try {
@@ -55,7 +61,7 @@ public class ConfigManager {
         }
         if (!file.exists()) {
             if (file.createNewFile()) {
-                plugin.getLogger().info("Created new file: " + file.getName());
+                if (consoleLogger) plugin.getLogger().info("Created new file: " + file.getName());
             }
         }
         this.config = YamlConfiguration.loadConfiguration(this.file);
@@ -72,20 +78,37 @@ public class ConfigManager {
     public ConfigManager(Plugin plugin, String fileName, String path, boolean force, boolean copy) throws IOException {
         this.plugin = plugin;
         String filePath = plugin.getDataFolder() + File.separator + path;
-        this.file = new File(plugin.getDataFolder() + File.separator + path, fileName);
+        process(plugin, fileName, filePath, force, copy);
+        isInFolder = true;
+    }
+    private void process(Plugin plugin, String fileName, String path, boolean force, boolean copy) throws IOException {
+        this.file = new File(path, fileName);
         if (!file.exists()) {
-            plugin.getLogger().info("creating new File");
-            plugin.getLogger().info("Creating folder: " + new File(plugin.getDataFolder() + File.separator + path).mkdirs());
+            File file = new File(path);
+            if (file.mkdirs()) {
+                if (consoleLogger) plugin.getLogger().info("Created new directory: " + file.getName());
+            }
             if (copy) try {
                 copy(force, path + File.separator + fileName);
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
             }
-            else plugin.getLogger().info("Creating file: " + file.createNewFile());
+            else {
+                if (file.createNewFile()) if (consoleLogger) plugin.getLogger().info("Creating file: " + file.getName());
+            }
         }
         this.config = YamlConfiguration.loadConfiguration(this.file);
     }
 
+    /**
+     * Set logger of config load events. by default it's enabled
+     * @param consoleLogger boolean
+     * @return ConfigManager
+     */
+    public ConfigManager setConsoleLogger(boolean consoleLogger) {
+        this.consoleLogger = consoleLogger;
+        return this;
+    }
     /**
      * Set the version of the config. useful for updating the config.
      * @param configVersion Version of the config
@@ -125,10 +148,13 @@ public class ConfigManager {
     /**
      * Reload the config.
      * @throws IOException IOException
-     * @throws InvalidConfigurationException InvalidConfigurationException
      */
-    public void reload() throws IOException, InvalidConfigurationException {
-        config.load(file);
+    public void reload() throws IOException {
+        if (isInFolder) {
+            process(plugin, file.getName(), file.getParentFile().getName(), false, false);
+            return;
+        }
+        process(plugin, file.getName(), false, false);
     }
 
     /**
@@ -202,8 +228,11 @@ public class ConfigManager {
      * @param path String
      * @return Object
      */
-    public Object get(String path) {
-        return config.get(path);
+    public @Nullable Object get(String path) {
+        if (config.contains(path)) {
+            return config.get(path);
+        }
+        return null;
     }
 
     /**
@@ -211,8 +240,11 @@ public class ConfigManager {
      * @param path String
      * @return List
      */
-    public List<String> getStringList(String path) {
-        return config.getStringList(path);
+    public @Nullable List<String> getStringList(String path) {
+        if (config.contains(path)) {
+            return config.getStringList(path);
+        }
+        return null;
     }
 
     /**
@@ -221,8 +253,14 @@ public class ConfigManager {
      * @param value String to add to list
      */
     public void addToStringList(String path, String value) {
-        set(path,getStringList(path).add(value));
-        save();
+        if (config.contains(path) && config.isList(path)) {
+            List<String> list = config.getStringList(path);
+            list.add(value);
+            config.set(path, list);
+            save();
+        }else {
+            throw new IllegalArgumentException(path + " does not exist" + " in " + file.getName() + " or is not a list");
+        }
     }
     /**
      * Get the given path as a boolean.
@@ -259,5 +297,4 @@ public class ConfigManager {
     public String getString(String path) {
         return config.getString(path);
     }
-
 }
